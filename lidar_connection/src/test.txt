@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+import rospy
+import pcl
+from pcl_conversions import point_cloud2
+from sensor_msgs.msg import PointCloud2
+
+def callback(msg):
+    # Преобразование ROS сообщения в PCL
+    cloud = point_cloud2.pointcloud2_to_array(msg)
+
+    # Создание объекта PointCloud
+    pcl_cloud = pcl.PointCloud()
+    pcl_cloud.from_array(cloud)
+
+    # Фильтрация (например, Voxel Grid)
+    voxel_filter = pcl_cloud.make_voxel_grid_filter()
+    voxel_filter.set_leaf_size(0.01, 0.01, 0.01)  # Задайте размер вокселя
+    filtered_cloud = voxel_filter.filter()
+
+    # Сглаживание (например, Moving Least Squares)
+    sor = filtered_cloud.make_moving_least_squares()
+    sor.set_search_radius(0.03)  # Задайте радиус поиска
+    sor.set_mu(0.01)  # Параметр mu
+    smoothed_cloud = sor.filter()
+
+    # Публикация обработанного облака точек
+    pub.publish(point_cloud2.create_cloud_xyz32(msg.header, smoothed_cloud.to_array()))
+
+if __name__ == '__main__':
+    rospy.init_node('pointcloud_filter_node')
+    sub = rospy.Subscriber('/point_cloud', PointCloud2, callback)
+    pub = rospy.Publisher('/filtered_point_cloud', PointCloud2, queue_size=1)
+    rospy.spin()

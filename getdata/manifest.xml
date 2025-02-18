@@ -1,0 +1,15 @@
+<package>
+  <description brief="getdata">
+
+     getdata
+
+  </description>
+  <author>work</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/getdata</url>
+  <depend package="rospy"/>
+  <depend package="sensor_msgs"/>
+  <depend package="pcl_ros"/>
+
+</package>
