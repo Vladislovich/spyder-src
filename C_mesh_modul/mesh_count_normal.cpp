@@ -87,7 +87,7 @@ int main()
                 viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0.0, 1.0, 0.0, "ref_mesh");
             }
 
-
+            Mesh.write_point_xyz(&viewer);
 
             if (count_normal_error == 1)
             {
@@ -99,3 +99,7 @@ int main()
         viewer.spinOnce(100); 
     }
 }
+
+
+// vld_n45_100_3.txt
+// ord_pov45_50_2.txt

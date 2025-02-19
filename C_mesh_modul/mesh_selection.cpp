@@ -34,6 +34,8 @@ int main()
             Mesh.cloudXYZI = Mesh.XYZSelection(Mesh.cloudXYZI_src);
             if (point_viz == 2) Mesh.cloudXYZI_viz = Mesh.cloudXYZI;
 
+            //Mesh.write_point_xyz(&viewer);
+
             pcl::visualization::PointCloudColorHandlerGenericField<pcl::PointXYZI> intensity_distribution(Mesh.cloudXYZI_viz, "intensity");
             viewer.addPointCloud<pcl::PointXYZI>(Mesh.cloudXYZI_viz, intensity_distribution, "cloud");
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
