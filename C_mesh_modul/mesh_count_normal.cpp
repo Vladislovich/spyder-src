@@ -19,7 +19,7 @@ int main()
     std::cout << "Введите файл: " << std::endl;
     std::getline(std::cin, filename);
     
-    mesh_struct Mesh("../selected_data/" + filename);
+    mesh_struct Mesh("../exper_data_filtered/" + filename);
     
     //Создание визуализатора
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
@@ -58,8 +58,6 @@ int main()
                 viewer.addPolygonMesh(*Mesh.mesh, "mesh");
                 viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 1.0, 1.0, "mesh");
             }
-
-
 
 
 

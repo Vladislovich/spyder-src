@@ -276,7 +276,7 @@ PCLIptr mesh_struct::SorFilter(PCLIptr input_cloud)
 
 PCLIptr mesh_struct::VoxelGridFilter(PCLIptr input_cloud)
 {
-    static int LeafSize_int = 4;
+    static int LeafSize_int = 6;
     global_treckbar.push_treckbar("VoxelGridFilter: LeafSize", &LeafSize_int, 40);
 
     //замена точек в вокселе одной точкой 
