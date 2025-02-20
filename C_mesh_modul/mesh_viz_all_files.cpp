@@ -26,7 +26,7 @@ int main()
     viewer.setCameraPosition(0, 1, 1, 1, 1, 1);
 
     std::ofstream out;          // поток для записи
-    out.open("../data_info_results/outputfile.txt");      // открываем файл для записи
+    out.open("../data_info_results/outputfile_2.txt");      // открываем файл для записи
     std::string path = "../exper_data_filtered";
     for (const auto& entry : fs::directory_iterator(path))
     {
@@ -50,8 +50,9 @@ int main()
                 if (point_viz == 0) Mesh.cloudXYZI_viz = Mesh.cloudXYZI; 
                 Mesh.cloudXYZI = Mesh.VoxelGridFilter(Mesh.cloudXYZI);
                 if (point_viz == 1) Mesh.cloudXYZI_viz = Mesh.cloudXYZI;
-                Mesh.cloudXYZIN = Mesh.Smoothing(Mesh.cloudXYZI);
-                if (point_viz == 2) Mesh.cloudXYZI_viz = Mesh.convertToXYZI(Mesh.cloudXYZIN);
+                Mesh.cloudXYZIN = Mesh.computeNormals(Mesh.cloudXYZI);
+                //Mesh.cloudXYZIN = Mesh.Smoothing(Mesh.cloudXYZI);
+                //if (point_viz == 2) Mesh.cloudXYZI_viz = Mesh.convertToXYZI(Mesh.cloudXYZIN);
                 if (point_viz <= 2){
                     pcl::visualization::PointCloudColorHandlerGenericField<pcl::PointXYZI> intensity_distribution(Mesh.cloudXYZI_viz, "intensity");
                     viewer.addPointCloud<pcl::PointXYZI>(Mesh.cloudXYZI_viz, intensity_distribution, "cloud");
@@ -83,10 +84,10 @@ int main()
 
 
                 if (count_normal_error)
-                    std::cout << "normal error: " << Mesh.count_normal_error(coef, Mesh.cloudXYZIN) << std::endl;
+                    std::cout << "normal error: " << Mesh.count_normal_error(coef, Mesh.cloudXYZIN) * 1000 << std::endl;
                 
                 if (out.is_open() && write_to_file)
-                    out << entry.path().filename() << ": " << Mesh.count_normal_error(coef, Mesh.cloudXYZIN) << std::endl;
+                    out << entry.path().filename() << ": " << Mesh.count_normal_error(coef, Mesh.cloudXYZIN)*1000 << std::endl;
                                        
             }        
             key = cv::waitKey(1); 
