@@ -26,7 +26,7 @@ int main()
     viewer.setCameraPosition(0, 1, 1, 1, 1, 1);
 
     std::ofstream out;          // поток для записи
-    out.open("../data_info_results/outputfile_2.txt");      // открываем файл для записи
+    out.open("../data_info_results/PCA_no_smooth.txt");      // открываем файл для записи
     std::string path = "../exper_data_filtered";
     for (const auto& entry : fs::directory_iterator(path))
     {
@@ -66,7 +66,8 @@ int main()
                 
                 Mesh.RefXYZI = Mesh.cloudXYZI_src;
                 if (ref_point_viz == 0) Mesh.RefXYZI_viz = Mesh.RefXYZI; 
-                std::vector<float> coef = Mesh.Ransac(Mesh.RefXYZI);
+                //std::vector<float> coef = Mesh.Ransac(Mesh.RefXYZI);
+                std::vector<float> coef = Mesh.computePlanePCA(Mesh.RefXYZI);
                 Mesh.RefXYZI = Mesh.generatePlane(coef, 0.5);
                 if (ref_point_viz == 1) Mesh.RefXYZI_viz = Mesh.RefXYZI;
                 Mesh.RefXYZIN = Mesh.computeNormals(Mesh.RefXYZI);

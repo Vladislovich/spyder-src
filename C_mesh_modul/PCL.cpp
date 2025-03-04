@@ -584,6 +584,23 @@ std::vector<float> mesh_struct::Ransac(pcl::PointCloud<pcl::PointXYZI>::Ptr inpu
     return coef;
 }
 
+
+std::vector<float> mesh_struct::computePlanePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud)
+{
+    Eigen::Vector4f centroid;
+    pcl::compute3DCentroid(*input_cloud, centroid);
+
+    Eigen::Matrix3f covariance;
+    pcl::computeCovarianceMatrixNormalized(*input_cloud, centroid, covariance);
+
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> solver(covariance);
+    Eigen::Vector3f normal = solver.eigenvectors().col(0); // Собственный вектор, соответствующий наименьшему собственному значению
+
+    float d = -normal.dot(centroid.head<3>()); // Смещение плоскости
+    return {normal[0], normal[1], normal[2], d};
+}
+
+
 PCLIptr mesh_struct::generatePlane(std::vector<float> coef, float range)
 {
     PCLIptr output_cloud(new PCLI);

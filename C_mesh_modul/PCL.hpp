@@ -81,6 +81,7 @@ public:
     
     PCLIptr generatePlane(std::vector<float> coef, float range);
     std::vector<float> Ransac(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
+    std::vector<float> computePlanePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
 
     float count_normal_error(std::vector<float> coef, PCLINptr input_cloud);
 };
