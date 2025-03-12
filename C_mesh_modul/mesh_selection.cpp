@@ -11,8 +11,8 @@ int main()
     std::cout << "Введите файл: " << std::endl;
     std::getline(std::cin, filename);
     
-    mesh_struct Mesh("../exper_data/" + filename);
-    
+    mesh_struct Mesh("../ball_data/" + filename);
+    filename = filename + "_selected"; //------------------------------FOR BALL----------------------------
     //Создание визуализатора
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
     viewer.setBackgroundColor(0.2, 0.2, 0.2); // Черный фон
@@ -41,7 +41,7 @@ int main()
             viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
             
             if (mesh_viz == 1)
-                Mesh.Write_cloud_to_file("../exper_data_filtered/"+filename);
+                Mesh.Write_cloud_to_file("../ball_data/"+filename);
         }
         int key = cv::waitKey(1); 
         viewer.spinOnce(100); 

@@ -45,6 +45,7 @@ int main()
                 
                 if (mesh_viz == 1)
                     Mesh.Write_cloud_to_file("../exper_data_filtered/" + entry.path().filename().string());
+                    //Mesh.Write_cloud_to_file("../exper_data_filtered/" + entry.path().filename().string());
             }
             key = cv::waitKey(1); 
             viewer.spinOnce(100); 

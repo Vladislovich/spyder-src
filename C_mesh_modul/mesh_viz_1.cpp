@@ -8,7 +8,7 @@ int main()
     global_treckbar.push_treckbar("mesh_viz", &mesh_viz, 2);
 
     //mesh_struct Mesh("../data/lidar_dataset_2.txt", 2);
-    mesh_struct Mesh("../selected_data/velodyne_data_nakl_10_4.txt");
+    mesh_struct Mesh("../ball_data/vld_ball_1_selected.txt");
     
     //Создание визуализатора
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
@@ -43,8 +43,8 @@ int main()
             
             if (mesh_viz == 1)
             {
-                //Mesh.mesh = Mesh.Meshing(Mesh.cloudXYZIN);
-                Mesh.mesh = Mesh.Poisson_mesh(Mesh.cloudXYZIN);
+                Mesh.mesh = Mesh.Meshing(Mesh.cloudXYZIN);
+                //Mesh.mesh = Mesh.Poisson_mesh(Mesh.cloudXYZIN);
                 //Mesh.mesh = Mesh.FastMesh(Mesh.cloudXYZIN);  
                 //Mesh.mesh = Mesh.Alpha_shapes(Mesh.cloudXYZIN);        
                 //Mesh.mesh = Mesh.MarchingCubes(Mesh.cloudXYZIN);              

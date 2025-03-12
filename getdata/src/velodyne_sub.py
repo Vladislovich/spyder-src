@@ -40,8 +40,8 @@ def velodyne_scan_callback(cloud):
 
         # Открываем файл для записи
         filename = input("Введите файл: ")
-        filename = "vld_pov45_" + filename + ".txt"
-        log_file_path = os.path.join(current_dir, "..//..//exper_data", filename)
+        filename = "vld_ball_" + filename + ".txt"
+        log_file_path = os.path.join(current_dir, "..//..//ball_data", filename)
         os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
         with open(log_file_path, "a") as log_file: #a
             #log_file.write(log_message)
