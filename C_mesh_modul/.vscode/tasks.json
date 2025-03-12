@@ -68,6 +68,7 @@
                 "-lvtkRenderingOpenGL2-7.1", 
                 "-lvtkInteractionStyle-7.1", 
                 "-lvtkIOXML-7.1",
+                "-lvtkRenderingLOD-7.1",
                 
                 //подключение opencv
                 "-I/usr/include/opencv4/opencv", 

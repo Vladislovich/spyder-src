@@ -378,7 +378,7 @@ pcl::PolygonMesh::Ptr mesh_struct::Poisson_mesh(PCLINptr input_cloud)
 {
     static int Depth_int = 8;
     global_treckbar.push_treckbar("Poisson_mesh: Depth", &Depth_int, 100);
-    static int Scale_int = 0;
+    static int Scale_int = 1;
     global_treckbar.push_treckbar("Poisson_mesh: Scale", &Scale_int, 10);
 
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_normals(new pcl::PointCloud<pcl::PointNormal>());
@@ -583,6 +583,66 @@ std::vector<float> mesh_struct::Ransac(pcl::PointCloud<pcl::PointXYZI>::Ptr inpu
     //std::cout << "Уравнение плоскости: " << coef[0] << " * x + " << coef[1] << " * y + "<< coef[2] << " * z + "<< coef[3] << " = 0" << std::endl;
     return coef;
 }
+
+
+std::vector<float> mesh_struct::RansacBall(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud)
+{
+    pcl::SACSegmentation<pcl::PointXYZI> seg;
+    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+
+    seg.setOptimizeCoefficients(true);
+    seg.setModelType(pcl::SACMODEL_SPHERE);  // Поиск сферы
+    seg.setMethodType(pcl::SAC_RANSAC);
+    seg.setDistanceThreshold(0.01); // Задайте меньшее значение для лучшей точности
+    seg.setMaxIterations(1000);     // Увеличение количества итераций
+    seg.setRadiusLimits(0.1, 10.0); // Ограничение на радиус сферы (при необходимости)
+
+    seg.setInputCloud(input_cloud);
+    seg.segment(*inliers, *coefficients);
+
+    if (inliers->indices.empty()) {
+        std::cerr << "Сфера не найдена!" << std::endl;
+        return {};
+    }
+
+    std::vector<float> coef = {
+        coefficients->values[0], // x центра
+        coefficients->values[1], // y центра
+        coefficients->values[2], // z центра
+        coefficients->values[3]  // Радиус сферы
+    };
+
+    std::cout << "Сфера: центр (" << coef[0] << ", " << coef[1] << ", " << coef[2] 
+              << "), радиус = " << coef[3] << std::endl;
+
+    return coef;
+}
+
+
+
+std::vector<float> mesh_struct::ComputeSpherePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud)
+{
+    Eigen::Matrix3f covariance;
+    Eigen::Vector4f centroid;
+
+    // Вычисляем центр масс и ковариационную матрицу
+    pcl::computeMeanAndCovarianceMatrix(*input_cloud, covariance, centroid);
+
+    // Центр сферы (приближённый)
+    float cx = centroid[0];
+    float cy = centroid[1];
+    float cz = centroid[2];
+
+    // Вычисляем радиус как среднее расстояние до центра
+    float radius = 0.0;
+    for (const auto& point : input_cloud->points)
+        radius += std::sqrt(std::pow(point.x - cx, 2) + std::pow(point.y - cy, 2) + std::pow(point.z - cz, 2));
+    radius /= input_cloud->points.size();
+
+    return {cx, cy, cz, radius};
+}
+
 
 
 std::vector<float> mesh_struct::computePlanePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud)

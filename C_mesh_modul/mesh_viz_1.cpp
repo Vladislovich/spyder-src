@@ -43,8 +43,8 @@ int main()
             
             if (mesh_viz == 1)
             {
-                Mesh.mesh = Mesh.Meshing(Mesh.cloudXYZIN);
-                //Mesh.mesh = Mesh.Poisson_mesh(Mesh.cloudXYZIN);
+                //Mesh.mesh = Mesh.Meshing(Mesh.cloudXYZIN);
+                Mesh.mesh = Mesh.Poisson_mesh(Mesh.cloudXYZIN);
                 //Mesh.mesh = Mesh.FastMesh(Mesh.cloudXYZIN);  
                 //Mesh.mesh = Mesh.Alpha_shapes(Mesh.cloudXYZIN);        
                 //Mesh.mesh = Mesh.MarchingCubes(Mesh.cloudXYZIN);              
