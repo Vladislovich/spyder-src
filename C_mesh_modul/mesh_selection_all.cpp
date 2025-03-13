@@ -6,8 +6,8 @@ int main()
 {
     static int point_viz = 0;
     global_treckbar.push_treckbar("point_viz", &point_viz, 10);
-    static int mesh_viz = 0;
-    global_treckbar.push_treckbar("mesh_viz", &mesh_viz, 2);
+    static int write_points = 0;
+    global_treckbar.push_treckbar("write_points", &write_points, 2);
 
 
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
@@ -15,10 +15,10 @@ int main()
     viewer.addCoordinateSystem(0.2); // Добавить систему координат
     viewer.setCameraPosition(1.9715, -0.752592, 1.95634, 0.381396, -0.517583, 0.765927, 0.497065, 0.0119868, 0.00990051);
 
-    std::string path = "../exper_data";
+    std::string path = "../ball_data";
     for (const auto& entry : fs::directory_iterator(path))
     {
-        std::cout << entry.path().filename();
+        std::cout << entry.path().filename() << std::endl;
         mesh_struct Mesh = mesh_struct(entry.path());
         global_treckbar.treckbar_flag = true;
         int key = 0;
@@ -43,8 +43,8 @@ int main()
                 viewer.addPointCloud<pcl::PointXYZI>(Mesh.cloudXYZI_viz, intensity_distribution, "cloud");
                 viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
                 
-                if (mesh_viz == 1)
-                    Mesh.Write_cloud_to_file("../exper_data_filtered/" + entry.path().filename().string());
+                if (write_points == 1)
+                    Mesh.Write_cloud_to_file("../ball_data_filtered/" + entry.path().filename().string());
                     //Mesh.Write_cloud_to_file("../exper_data_filtered/" + entry.path().filename().string());
             }
             key = cv::waitKey(1); 

@@ -86,6 +86,7 @@ public:
     std::vector<float> ComputeSpherePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
 
     float count_normal_error(std::vector<float> coef, PCLINptr input_cloud);
+    float count_normal_error_ball(std::vector<float> coef, PCLINptr input_cloud);
 };
 
 class treckbar

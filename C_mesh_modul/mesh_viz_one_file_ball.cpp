@@ -16,8 +16,6 @@ int main()
     static int count_normal_error = 0;
     global_treckbar.push_treckbar("count_normal_error", &count_normal_error, 1);
 
-    static int write_to_file = 0;
-    global_treckbar.push_treckbar("write_to_file", &write_to_file, 1);
 
     //Создание визуализатора
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
@@ -59,8 +57,7 @@ int main()
                 viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 1.0, 1.0, "mesh");
             }
             
-            Mesh.RefXYZI = Mesh.cloudXYZI_src;
-            //std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);        
+            Mesh.RefXYZI = Mesh.cloudXYZI_src;      
             std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);                   
             if (ref_mesh_viz == 1)
             {
@@ -71,7 +68,8 @@ int main()
             
                 viewer.addSphere(pcl::PointXYZ(x, y, z), radius, 1.0, 0.0, 0.0, "ransac_sphere"); // Красная сфера
             }
-
+            if (count_normal_error)
+                std::cout << "normal error: " << Mesh.count_normal_error_ball(coef, Mesh.cloudXYZIN) << std::endl;
                         
         }        
         cv::waitKey(1); 

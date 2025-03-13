@@ -81,9 +81,9 @@ def main():
     global log_file_path 
     # Открываем файл для записи
     filename = input("Введите файл: ")
-    filename = "ord_n45_250_" + filename + ".txt"    
+    filename = "ord_ball_250_" + filename + ".txt"    
     current_dir = os.path.dirname(os.path.realpath(__file__))
-    log_file_path = os.path.join(current_dir, "..//..//exper_data", filename)
+    log_file_path = os.path.join(current_dir, "..//..//ball_data", filename)
 
     rospy.init_node('oradar_sub', anonymous=True)
     rospy.Subscriber("/MS200/scan", LaserScan, oradar_scan_callback)

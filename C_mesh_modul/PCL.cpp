@@ -700,3 +700,33 @@ float mesh_struct::count_normal_error(std::vector<float> coef, PCLINptr input_cl
 
     return (summ / input_cloud->size());
 }
+
+float mesh_struct::count_normal_error_ball(std::vector<float> coef, PCLINptr input_cloud)
+{
+    PCLIptr output_cloud(new PCLI);
+
+    if (coef.empty()) return 0;
+    double xc = coef[0];
+    double yc = coef[1];
+    double zc = coef[2];
+    double radius = coef[3];
+    
+    float summ = 0;
+    for (unsigned int idx = 0; idx < input_cloud->size(); ++idx)
+    {
+        float x = input_cloud->at(idx).x;
+        float y = input_cloud->at(idx).y;
+        float z = input_cloud->at(idx).z;
+
+        float dx = abs(x - xc);
+        float dy = abs(y - yc);
+        float dz = abs(z - zc);
+
+        float norm_error = abs(radius - sqrt(dx*dx + dy*dy + dz*dz)) * 1000;
+        //std::cout << "norm_error: " << norm_error << std::endl;
+
+        summ += norm_error;
+    }
+
+    return (summ / input_cloud->size());
+}
