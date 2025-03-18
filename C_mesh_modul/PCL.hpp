@@ -87,6 +87,7 @@ public:
 
     float count_normal_error(std::vector<float> coef, PCLINptr input_cloud);
     float count_normal_error_ball(std::vector<float> coef, PCLINptr input_cloud);
+    float count_normal_error_ball(std::vector<float> coef, PCLIptr input_cloud);
 };
 
 class treckbar

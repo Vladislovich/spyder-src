@@ -26,6 +26,11 @@ float mesh_struct::RadiansToDegrees(float rad)
 
 void mesh_struct::Load_cloud_from_file(std::string filename)
 {    
+//
+    static int ang_correction = 1000;
+    global_treckbar.push_treckbar("ang_correction", &ang_correction, 1000);
+//
+
     std::ifstream inputFile(filename);
     if (!inputFile.is_open()) {
         std::cerr << "Не удалось открыть файл input.txt" << std::endl;
@@ -46,7 +51,8 @@ void mesh_struct::Load_cloud_from_file(std::string filename)
         {
             pcl::PointXYZI point;
             //r theta ard_ang x y inten
-            auto ard_ang = DegreesToRadians(numbers[2]);
+            float ard_ang = DegreesToRadians(numbers[2]);
+            ard_ang *= ((float)ang_correction / 1000); //////////////////AAAAAAAAAAAAAAAAAAAAAAAaaa
             auto x = numbers[3];
             auto y = numbers[4];
 
@@ -702,6 +708,36 @@ float mesh_struct::count_normal_error(std::vector<float> coef, PCLINptr input_cl
 }
 
 float mesh_struct::count_normal_error_ball(std::vector<float> coef, PCLINptr input_cloud)
+{
+    PCLIptr output_cloud(new PCLI);
+
+    if (coef.empty()) return 0;
+    double xc = coef[0];
+    double yc = coef[1];
+    double zc = coef[2];
+    double radius = coef[3];
+    
+    float summ = 0;
+    for (unsigned int idx = 0; idx < input_cloud->size(); ++idx)
+    {
+        float x = input_cloud->at(idx).x;
+        float y = input_cloud->at(idx).y;
+        float z = input_cloud->at(idx).z;
+
+        float dx = abs(x - xc);
+        float dy = abs(y - yc);
+        float dz = abs(z - zc);
+
+        float norm_error = abs(radius - sqrt(dx*dx + dy*dy + dz*dz)) * 1000;
+        //std::cout << "norm_error: " << norm_error << std::endl;
+
+        summ += norm_error;
+    }
+
+    return (summ / input_cloud->size());
+}
+
+float mesh_struct::count_normal_error_ball(std::vector<float> coef, PCLIptr input_cloud)
 {
     PCLIptr output_cloud(new PCLI);
 

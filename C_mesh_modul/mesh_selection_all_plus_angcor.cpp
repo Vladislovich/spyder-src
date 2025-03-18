@@ -9,6 +9,11 @@ int main()
     static int write_points = 0;
     global_treckbar.push_treckbar("write_points", &write_points, 2);
 
+    static int ref_mesh_viz = 0;
+    global_treckbar.push_treckbar("ref_mesh_viz", &ref_mesh_viz, 1);
+    static int count_normal_error = 0;
+    global_treckbar.push_treckbar("count_normal_error", &count_normal_error, 1);
+
 
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
     viewer.setBackgroundColor(0.2, 0.2, 0.2); // Черный фон
@@ -32,6 +37,8 @@ int main()
                 global_treckbar.treckbar_flag = 0;
                 viewer.removePointCloud("cloud");
                 viewer.removePolygonMesh("mesh");
+                viewer.removeShape("ransac_sphere");
+
 
                 if (point_viz == 0) Mesh.cloudXYZI_viz = Mesh.cloudXYZI_src;
 
@@ -48,7 +55,23 @@ int main()
                 if (write_points == 1)
                     Mesh.Write_cloud_to_file("../ball_data_filtered/" + entry.path().filename().string());
                     //Mesh.Write_cloud_to_file("../exper_data_filtered/" + entry.path().filename().string());
+
+
+
+                Mesh.RefXYZI = Mesh.cloudXYZI;      
+                std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);
+                coef[3] = 0.55;                   
+                if (ref_mesh_viz == 1)
+                {
+                    double x = coef[0];
+                    double y = coef[1];
+                    double z = coef[2];
+                    double radius = coef[3];
                 
+                    viewer.addSphere(pcl::PointXYZ(x, y, z), radius, 1.0, 0.0, 0.0, "ransac_sphere"); // Красная сфера
+                }
+                if (count_normal_error)
+                    std::cout << "normal error: " << Mesh.count_normal_error_ball(coef, Mesh.cloudXYZI) << std::endl;
             }
             key = cv::waitKey(1); 
             viewer.spinOnce(100); 

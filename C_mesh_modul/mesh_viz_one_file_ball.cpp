@@ -7,11 +7,8 @@ int main()
     static int mesh_viz = 0;
     global_treckbar.push_treckbar("mesh_viz", &mesh_viz, 1);
 
-    static int ref_point_viz = 0;
-    global_treckbar.push_treckbar("ref_point_viz", &ref_point_viz, 5);
     static int ref_mesh_viz = 0;
     global_treckbar.push_treckbar("ref_mesh_viz", &ref_mesh_viz, 1);
-
 
     static int count_normal_error = 0;
     global_treckbar.push_treckbar("count_normal_error", &count_normal_error, 1);
