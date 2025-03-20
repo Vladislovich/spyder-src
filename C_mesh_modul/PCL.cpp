@@ -602,7 +602,7 @@ std::vector<float> mesh_struct::RansacBall(pcl::PointCloud<pcl::PointXYZI>::Ptr 
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setDistanceThreshold(0.01); // Задайте меньшее значение для лучшей точности
     seg.setMaxIterations(1000);     // Увеличение количества итераций
-    seg.setRadiusLimits(0.1, 10.0); // Ограничение на радиус сферы (при необходимости)
+    seg.setRadiusLimits(0.59, 0.61); // Ограничение на радиус сферы (при необходимости)
 
     seg.setInputCloud(input_cloud);
     seg.segment(*inliers, *coefficients);

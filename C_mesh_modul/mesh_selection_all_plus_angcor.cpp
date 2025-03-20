@@ -56,22 +56,24 @@ int main()
                     Mesh.Write_cloud_to_file("../ball_data_filtered/" + entry.path().filename().string());
                     //Mesh.Write_cloud_to_file("../exper_data_filtered/" + entry.path().filename().string());
 
-
-
-                Mesh.RefXYZI = Mesh.cloudXYZI;      
-                std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);
-                coef[3] = 0.6;                   
+                                  
                 if (ref_mesh_viz == 1)
                 {
+                    Mesh.RefXYZI = Mesh.cloudXYZI;      
+                    std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);
+                    if (coef.empty()) continue;
+
                     double x = coef[0];
                     double y = coef[1];
                     double z = coef[2];
                     double radius = coef[3];
                 
                     viewer.addSphere(pcl::PointXYZ(x, y, z), radius, 1.0, 0.0, 0.0, "ransac_sphere"); // Красная сфера
+
+                    if (count_normal_error)
+                        std::cout << "normal error: " << Mesh.count_normal_error_ball(coef, Mesh.cloudXYZI) << std::endl;
                 }
-                if (count_normal_error)
-                    std::cout << "normal error: " << Mesh.count_normal_error_ball(coef, Mesh.cloudXYZI) << std::endl;
+                
             }
             key = cv::waitKey(1); 
             viewer.spinOnce(100); 
