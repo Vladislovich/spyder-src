@@ -60,7 +60,7 @@ int main()
 
                 Mesh.RefXYZI = Mesh.cloudXYZI;      
                 std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);
-                coef[3] = 0.55;                   
+                coef[3] = 0.6;                   
                 if (ref_mesh_viz == 1)
                 {
                     double x = coef[0];
@@ -76,10 +76,5 @@ int main()
             key = cv::waitKey(1); 
             viewer.spinOnce(100); 
         }
-        /*viewer.getCameras(cam);
-        cout << "Cam: " << endl 
-             << " - pos: (" << cam[0].pos[0] << ", "    << cam[0].pos[1] << ", "    << cam[0].pos[2] << ")" << endl 
-             << " - view: ("    << cam[0].view[0] << ", "   << cam[0].view[1] << ", "   << cam[0].view[2] << ")"    << endl 
-             << " - focal: ("   << cam[0].focal[0] << ", "  << cam[0].focal[1] << ", "  << cam[0].focal[2] << ")"   << endl;*/
     }
 }
