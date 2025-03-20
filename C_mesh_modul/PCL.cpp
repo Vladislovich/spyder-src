@@ -602,7 +602,7 @@ std::vector<float> mesh_struct::RansacBall(pcl::PointCloud<pcl::PointXYZI>::Ptr 
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setDistanceThreshold(0.01); // Задайте меньшее значение для лучшей точности
     seg.setMaxIterations(1000);     // Увеличение количества итераций
-    seg.setRadiusLimits(0.59, 0.61); // Ограничение на радиус сферы (при необходимости)
+    seg.setRadiusLimits(0.69, 0.71); // Ограничение на радиус сферы (при необходимости)
 
     seg.setInputCloud(input_cloud);
     seg.segment(*inliers, *coefficients);
@@ -623,6 +623,72 @@ std::vector<float> mesh_struct::RansacBall(pcl::PointCloud<pcl::PointXYZI>::Ptr 
               << "), радиус = " << coef[3] << std::endl;
 
     return coef;
+}
+
+std::vector<float> mesh_struct::FitSphereLeastSquares(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud) 
+{
+    int N = cloud->size();
+    Eigen::MatrixXd A(N, 4);
+    Eigen::VectorXd b(N);
+
+    for (int i = 0; i < N; ++i) {
+        float x = cloud->points[i].x;
+        float y = cloud->points[i].y;
+        float z = cloud->points[i].z;
+        A(i, 0) = x;
+        A(i, 1) = y;
+        A(i, 2) = z;
+        A(i, 3) = 1.0;
+        b(i) = -(x * x + y * y + z * z);
+    }
+
+    Eigen::VectorXd x = A.jacobiSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
+    float xc = -0.5 * x(0);
+    float yc = -0.5 * x(1);
+    float zc = -0.5 * x(2);
+    float radius = std::sqrt(xc * xc + yc * yc + zc * zc - x(3));
+
+    return {xc, yc, zc, radius};
+}
+
+
+std::vector<float> mesh_struct::FitFixedRadiusSphere(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, float radius) 
+{
+    int N = cloud->size();
+    if (N < 4) {
+        std::cerr << "Недостаточно точек для аппроксимации!" << std::endl;
+        return {};
+    }
+
+    // 1. Найдем центр масс облака
+    Eigen::Vector3d centroid(0, 0, 0);
+    for (const auto& p : cloud->points) {
+        centroid(0) += p.x;
+        centroid(1) += p.y;
+        centroid(2) += p.z;
+    }
+    centroid /= N;
+
+    // 2. Формируем систему уравнений с центрированием
+    Eigen::MatrixXd A(N, 3);
+    Eigen::VectorXd B(N);
+
+    for (int i = 0; i < N; ++i) {
+        float x = cloud->points[i].x - centroid(0);
+        float y = cloud->points[i].y - centroid(1);
+        float z = cloud->points[i].z - centroid(2);
+
+        A(i, 0) = -2 * x;
+        A(i, 1) = -2 * y;
+        A(i, 2) = -2 * z;
+        B(i) = radius * radius - (x * x + y * y + z * z);
+    }
+
+    // 3. Решаем систему уравнений
+    Eigen::Vector3d center_offset = (A.transpose() * A).ldlt().solve(A.transpose() * B);
+    Eigen::Vector3d sphere_center = center_offset + centroid;
+
+    return {(float)sphere_center(0), (float)sphere_center(1), (float)sphere_center(2), radius};
 }
 
 

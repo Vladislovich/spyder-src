@@ -23,6 +23,7 @@
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
+#include <Eigen/Dense>
 
 #include <opencv2/opencv.hpp>
 
@@ -33,6 +34,8 @@
 #include <string>
 #include <algorithm>
 #include <filesystem>
+
+
 namespace fs = std::filesystem;
 
 typedef pcl::PointCloud<pcl::PointXYZI> PCLI;
@@ -82,6 +85,8 @@ public:
     PCLIptr generatePlane(std::vector<float> coef, float range);
     std::vector<float> Ransac(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
     std::vector<float> RansacBall(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
+    std::vector<float> FitSphereLeastSquares(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud);
+    std::vector<float> FitFixedRadiusSphere(const pcl::PointCloud<pcl::PointXYZI>::Ptr& cloud, float radius);
     std::vector<float> computePlanePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
     std::vector<float> ComputeSpherePCA(pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud);
 

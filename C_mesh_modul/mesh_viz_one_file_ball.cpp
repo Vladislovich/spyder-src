@@ -55,18 +55,12 @@ int main()
             }
             
             Mesh.RefXYZI = Mesh.cloudXYZI_src;      
-            std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);                   
+            std::vector<float> coef = Mesh.RansacBall(Mesh.RefXYZI);    
+            if (coef.empty()) continue;               
             if (ref_mesh_viz == 1)
-            {
-                double x = coef[0];
-                double y = coef[1];
-                double z = coef[2];
-                double radius = coef[3];
-            
-                viewer.addSphere(pcl::PointXYZ(x, y, z), radius, 1.0, 0.0, 0.0, "ransac_sphere"); // Красная сфера
-            }
+                viewer.addSphere(pcl::PointXYZ(coef[0], coef[1], coef[2]), coef[3], 1.0, 0.0, 0.0, "ransac_sphere"); // Красная сфера
             if (count_normal_error)
-                std::cout << "normal error: " << Mesh.count_normal_error_ball(coef, Mesh.cloudXYZIN) << std::endl;
+                std::cout << "normal error: " << Mesh.count_normal_error_ball(coef, Mesh.RefXYZI) << std::endl;
                         
         }        
         cv::waitKey(1); 
