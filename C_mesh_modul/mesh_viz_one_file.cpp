@@ -29,7 +29,7 @@ int main()
     std::cout << "Введите файл: " << std::endl;
     std::getline(std::cin, filename);
     
-    mesh_struct Mesh("../exper_data_filtered/" + filename);
+    mesh_struct Mesh("../show/" + filename);
     global_treckbar.treckbar_flag = true;
     
     while (!viewer.wasStopped()) 
