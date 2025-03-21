@@ -24,6 +24,7 @@ int main()
     {
         if (global_treckbar.treckbar_flag)
         {
+            Mesh.Load_cloud_from_file("../show/" + filename);
             global_treckbar.treckbar_flag = 0;
 
             viewer.removePointCloud("cloud");
