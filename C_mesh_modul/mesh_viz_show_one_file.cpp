@@ -9,7 +9,7 @@ int main()
 
     //Создание визуализатора
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
-    viewer.setBackgroundColor(0.2, 0.2, 0.2); // Черный фон
+    viewer.setBackgroundColor(1.0, 1.0, 1.0); 
     viewer.addCoordinateSystem(0.2); // Добавить систему координат
     viewer.setCameraPosition(0, 1, 1, 1, 1, 1);
 
@@ -39,7 +39,7 @@ int main()
             if (point_viz <= 2){
                 pcl::visualization::PointCloudColorHandlerGenericField<pcl::PointXYZI> intensity_distribution(Mesh.cloudXYZI_viz, "intensity");
                 viewer.addPointCloud<pcl::PointXYZI>(Mesh.cloudXYZI_viz, intensity_distribution, "cloud");
-                viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "cloud");
+                viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
             }
             if (mesh_viz == 1){
                 Mesh.mesh = Mesh.Poisson_mesh(Mesh.cloudXYZIN);             
