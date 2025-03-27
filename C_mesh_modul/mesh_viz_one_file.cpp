@@ -2,6 +2,12 @@
 
 int main()
 {
+    std::string filename;
+    std::cout << "Введите файл: " << std::endl;
+    std::getline(std::cin, filename);    
+    mesh_struct Mesh("../show/" + filename);
+
+
     static int point_viz = 0;
     global_treckbar.push_treckbar("point_viz", &point_viz, 5);    
     static int mesh_viz = 0;
@@ -16,22 +22,13 @@ int main()
     static int count_normal_error = 0;
     global_treckbar.push_treckbar("count_normal_error", &count_normal_error, 1);
 
-    static int write_to_file = 0;
-    global_treckbar.push_treckbar("write_to_file", &write_to_file, 1);
-
     //Создание визуализатора
     pcl::visualization::PCLVisualizer viewer("Mesh Viewer");
-    viewer.setBackgroundColor(0.2, 0.2, 0.2); // Черный фон
+    viewer.setBackgroundColor(1.0, 1.0, 1.0); 
     viewer.addCoordinateSystem(0.2); // Добавить систему координат
     viewer.setCameraPosition(0, 1, 1, 1, 1, 1);
-
-    std::string filename;
-    std::cout << "Введите файл: " << std::endl;
-    std::getline(std::cin, filename);
     
-    mesh_struct Mesh("../show/" + filename);
-    global_treckbar.treckbar_flag = true;
-    
+    global_treckbar.treckbar_flag = true;    
     while (!viewer.wasStopped()) 
     {
         if (global_treckbar.treckbar_flag)
@@ -47,8 +44,11 @@ int main()
             if (point_viz == 0) Mesh.cloudXYZI_viz = Mesh.cloudXYZI; 
             Mesh.cloudXYZI = Mesh.VoxelGridFilter(Mesh.cloudXYZI);
             if (point_viz == 1) Mesh.cloudXYZI_viz = Mesh.cloudXYZI;
-            Mesh.cloudXYZIN = Mesh.Smoothing(Mesh.cloudXYZI);
-            if (point_viz == 2) Mesh.cloudXYZI_viz = Mesh.convertToXYZI(Mesh.cloudXYZIN);
+            Mesh.cloudXYZIN = Mesh.computeNormals(Mesh.cloudXYZI);
+
+            //Mesh.cloudXYZIN = Mesh.Smoothing(Mesh.cloudXYZI);
+            //if (point_viz == 2) Mesh.cloudXYZI_viz = Mesh.convertToXYZI(Mesh.cloudXYZIN);
+
             if (point_viz <= 2){
                 pcl::visualization::PointCloudColorHandlerGenericField<pcl::PointXYZI> intensity_distribution(Mesh.cloudXYZI_viz, "intensity");
                 viewer.addPointCloud<pcl::PointXYZI>(Mesh.cloudXYZI_viz, intensity_distribution, "cloud");
@@ -62,7 +62,7 @@ int main()
             
             Mesh.RefXYZI = Mesh.cloudXYZI_src;
             if (ref_point_viz == 0) Mesh.RefXYZI_viz = Mesh.RefXYZI; 
-            std::vector<float> coef = Mesh.Ransac(Mesh.RefXYZI);
+            std::vector<float> coef = Mesh.computePlanePCA(Mesh.RefXYZI);
             Mesh.RefXYZI = Mesh.generatePlane(coef, 0.5);
             if (ref_point_viz == 1) Mesh.RefXYZI_viz = Mesh.RefXYZI;
             Mesh.RefXYZIN = Mesh.computeNormals(Mesh.RefXYZI);
@@ -78,10 +78,8 @@ int main()
                 viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0.0, 1.0, 0.0, "ref_mesh");
             }
 
-
             if (count_normal_error)
-                std::cout << "normal error: " << Mesh.count_normal_error(coef, Mesh.cloudXYZIN) << std::endl;
-                        
+                std::cout << "normal error: " << Mesh.count_normal_error(coef, Mesh.cloudXYZIN) * 1000 << std::endl;                                   
         }        
         cv::waitKey(1); 
         viewer.spinOnce(100); 
