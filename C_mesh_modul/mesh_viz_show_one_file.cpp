@@ -2,6 +2,11 @@
 
 int main()
 {
+    std::string filename;
+    std::cout << "Введите файл: " << std::endl;
+    std::getline(std::cin, filename);    
+    mesh_struct Mesh("../show/" + filename);
+
     static int point_viz = 0;
     global_treckbar.push_treckbar("point_viz", &point_viz, 5);    
     static int mesh_viz = 0;
@@ -12,12 +17,7 @@ int main()
     viewer.setBackgroundColor(1.0, 1.0, 1.0); 
     viewer.addCoordinateSystem(0.2); // Добавить систему координат
     viewer.setCameraPosition(0, 1, 1, 1, 1, 1);
-
-    std::string filename;
-    std::cout << "Введите файл: " << std::endl;
-    std::getline(std::cin, filename);
     
-    mesh_struct Mesh("../show/" + filename);
     global_treckbar.treckbar_flag = true;
     
     while (!viewer.wasStopped()) 
